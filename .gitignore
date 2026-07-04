@@ -1,0 +1,4 @@
+wxbot-plugin
+dist/
+coverage.out
+.DS_Store

@@ -1,0 +1,20 @@
+# {{.Name}}
+
+{{.Description}}
+
+## 开发
+
+```bash
+go mod tidy
+```
+
+## 打包
+
+```bash
+wxbot-plugin package -config wxbot-plugin.yaml
+wxbot-plugin verify -file ./dist/{{.ID}}-{{.Version}}.wxplugin
+```
+
+## 说明
+
+当前插件是 process runtime。安装后 wechat-desk 会启动 `backend/bin/{{.ID}}-process`，并把 `/api/plugins/{{.ID}}/api/*` 代理到插件进程。

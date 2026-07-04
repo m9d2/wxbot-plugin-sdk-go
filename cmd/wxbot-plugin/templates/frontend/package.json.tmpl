@@ -1,0 +1,20 @@
+{
+  "name": "@wxbot-plugin/{{.ID}}-frontend",
+  "private": true,
+  "version": {{printf "%q" .Version}},
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json --noEmit && vite build --config vite.config.ts",
+    "dev": "vite --config vite.config.ts --host 0.0.0.0 --port 3301"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.19",
+    "typescript": "^5.8.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "@types/node": "^20.19.1",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5"
+  }
+}

@@ -1,0 +1,37 @@
+import {useEffect, useState} from 'react'
+
+type HostContext = {
+  token?: string
+  wxid?: string
+}
+
+export function App() {
+  const [context, setContext] = useState<HostContext>({})
+
+  useEffect(() => {
+    const handler = (event: MessageEvent) => {
+      if (!event.data || typeof event.data !== 'object') return
+      if (event.data.type !== 'wxbot-plugin-context') return
+      setContext({
+        token: event.data.token,
+        wxid: event.data.wxid,
+      })
+    }
+    window.addEventListener('message', handler)
+    window.parent?.postMessage({type: 'wxbot-plugin-ready', pluginId: {{printf "%q" .ID}}}, '*')
+    return () => window.removeEventListener('message', handler)
+  }, [])
+
+  return (
+    <main className="page">
+      <section className="panel">
+        <h1>{{.Name}}</h1>
+        <p>{{.Description}}</p>
+        <dl>
+          <dt>当前 wxid</dt>
+          <dd>{context.wxid || '未选择'}</dd>
+        </dl>
+      </section>
+    </main>
+  )
+}

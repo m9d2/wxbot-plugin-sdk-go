@@ -1,0 +1,17 @@
+{
+  "id": {{printf "%q" .ID}},
+  "name": {{printf "%q" .Name}},
+  "version": {{printf "%q" .Version}},
+  "runtime": "process",
+  "description": {{printf "%q" .Description}},
+  "entry": "backend/bin/{{.ID}}-process",
+{{if .Frontend}}  "frontend": "frontend/dist/index.html",
+{{end}}  "settingsSchema": "settings.schema.json",
+  "events": [
+    "message.received"
+  ],
+  "permissions": [
+    "message:read",
+    "message:send"
+  ]
+}

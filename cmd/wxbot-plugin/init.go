@@ -149,7 +149,10 @@ func createPluginProject(opts initOptions) error {
 	if err := ensureEmptyDir(targetDir); err != nil {
 		return err
 	}
-	files := pluginTemplateFiles(opts)
+	files, err := pluginTemplateFiles(opts)
+	if err != nil {
+		return err
+	}
 	for path, body := range files {
 		target := filepath.Join(targetDir, filepath.FromSlash(path))
 		if err := os.MkdirAll(filepath.Dir(target), 0o755); err != nil {

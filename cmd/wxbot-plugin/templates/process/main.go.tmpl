@@ -1,0 +1,71 @@
+package main
+
+import (
+	"context"
+	"net/http"
+	"strings"
+
+	sdk "github.com/m9d2/wxbot-plugin-sdk-go"
+)
+
+const pluginID = {{printf "%q" .ID}}
+
+type Plugin struct{}
+
+func (p *Plugin) Manifest() sdk.Manifest {
+	return sdk.Manifest{
+		ID:          pluginID,
+		Name:        {{printf "%q" .Name}},
+		Version:     {{printf "%q" .Version}},
+		Runtime:     sdk.RuntimeProcess,
+		Description: {{printf "%q" .Description}},
+		Events:      []string{sdk.EventMessageReceived},
+		Permissions: []sdk.Permission{
+			sdk.PermissionMessageRead,
+			sdk.PermissionMessageSend,
+		},
+	}
+}
+
+func (p *Plugin) RegisterRoutes(mux *http.ServeMux) {
+	mux.HandleFunc("/api/settings", p.settings)
+}
+
+func (p *Plugin) OnEvent(ctx context.Context, event sdk.Event) ([]sdk.Action, error) {
+	if event.Type != sdk.EventMessageReceived {
+		return nil, nil
+	}
+	fromWxid := sdk.PayloadString(event.Payload, "fromWxid")
+	content := strings.TrimSpace(sdk.PayloadString(event.Payload, "content"))
+	if fromWxid == "" || content != "ping" {
+		return nil, nil
+	}
+	return []sdk.Action{
+		sdk.SendTextMessage(event.AccountWxid, fromWxid, "pong"),
+	}, nil
+}
+
+func (p *Plugin) OnActionResult(ctx context.Context, result sdk.ActionResult) error {
+	return nil
+}
+
+func (p *Plugin) settings(w http.ResponseWriter, r *http.Request) {
+	wxid := sdk.AccountWxidFromRequest(r)
+	if wxid == "" {
+		sdk.Error(w, http.StatusBadRequest, "缺少 wxid")
+		return
+	}
+	sdk.WriteJSON(w, map[string]any{
+		"success": true,
+		"config": map[string]any{
+			"enabled": true,
+			"replyText": "pong",
+		},
+	})
+}
+
+func main() {
+	if err := sdk.Run(&Plugin{}); err != nil {
+		panic(err)
+	}
+}

@@ -1,0 +1,12 @@
+plugin:
+  manifest: manifest.json
+backend:
+  type: go
+  main: ./process
+  output: ./backend/bin/{{.ID}}-process
+{{if .Frontend}}frontend:
+  path: ./frontend
+  build: npm install && npm run build
+  dist: ./frontend/dist
+{{end}}package:
+  output: ./dist/{{.ID}}-{{.Version}}.wxplugin

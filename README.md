@@ -6,7 +6,7 @@ SDK 提供三类能力：
 
 - 插件协议类型：`Manifest`、`Event`、`Action`、`ActionResult`、`Permission`
 - Process 插件运行器：自动暴露 `/health`、`/events`、`/action-results`、`/shutdown`
-- 插件打包工具：`wxbot-plugin build/package/validate/verify`
+- 插件脚手架和打包工具：`wxbot-plugin init/build/package/validate/verify`
 
 插件项目只需要依赖 SDK，不需要 import `wechat-desk/internal/...`。
 
@@ -20,6 +20,48 @@ go install github.com/m9d2/wxbot-plugin-sdk-go/cmd/wxbot-plugin@latest
 
 ```bash
 go run ./cmd/wxbot-plugin validate -src ../your-plugin
+```
+
+## 创建插件项目
+
+交互式创建：
+
+```bash
+wxbot-plugin init
+```
+
+执行后会逐步提示输入：
+
+```text
+创建 wxbot 插件项目
+Plugin id [demo-plugin]:
+Plugin name [demo-plugin]:
+Version [1.0.0]:
+Description [A wxbot process plugin.]:
+Go module [github.com/your-org/demo-plugin]:
+Output directory [./demo-plugin]:
+Create frontend config page [Y/n]:
+```
+
+也可以像脚本一样非交互创建：
+
+```bash
+wxbot-plugin init \
+  -yes \
+  -id demo-plugin \
+  -name 示例插件 \
+  -version 1.0.0 \
+  -description 收到 ping 后自动回复 pong \
+  -module github.com/your-org/demo-plugin \
+  -dir ./demo-plugin
+```
+
+生成后：
+
+```bash
+cd demo-plugin
+go mod tidy
+wxbot-plugin package -config wxbot-plugin.yaml
 ```
 
 ## 插件项目结构

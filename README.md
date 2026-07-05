@@ -1,6 +1,6 @@
 # wxbot-plugin-sdk-go
 
-`wxbot-plugin-sdk-go` 是 wxbot / wechat-desk 的 Go 插件 SDK，用于开发独立进程插件。
+`wxbot-plugin-sdk-go` 是 wxbot 的 Go 插件 SDK，用于开发独立进程插件。
 
 SDK 提供三类能力：
 
@@ -8,18 +8,10 @@ SDK 提供三类能力：
 - Process 插件运行器：自动暴露 `/health`、`/events`、`/action-results`、`/shutdown`
 - 插件脚手架和打包工具：`wxbot-plugin init/build/package/validate/verify`
 
-插件项目只需要依赖 SDK，不需要 import `wechat-desk/internal/...`。
-
 ## 安装 CLI
 
 ```bash
 go install github.com/m9d2/wxbot-plugin-sdk-go/cmd/wxbot-plugin@latest
-```
-
-本地开发 SDK 时也可以直接运行：
-
-```bash
-go run ./cmd/wxbot-plugin validate -src ../your-plugin
 ```
 
 ## 创建插件项目
@@ -96,12 +88,6 @@ go 1.23.0
 require github.com/m9d2/wxbot-plugin-sdk-go v0.1.0
 ```
 
-本地同时开发 SDK 和插件时，可以临时加：
-
-```go
-replace github.com/m9d2/wxbot-plugin-sdk-go => ../wxbot-plugin-sdk-go
-```
-
 ## manifest.json
 
 `manifest.json` 是插件包声明，安装、启动、权限展示都依赖它。
@@ -117,7 +103,7 @@ replace github.com/m9d2/wxbot-plugin-sdk-go => ../wxbot-plugin-sdk-go
   "frontend": "frontend/dist/index.html",
   "settingsSchema": "settings.schema.json",
   "events": ["message.received"],
-  "permissions": ["message:read", "message:send"]
+  "permissions": ["account:read", "message:read", "message:send"]
 }
 ```
 
@@ -135,6 +121,14 @@ replace github.com/m9d2/wxbot-plugin-sdk-go => ../wxbot-plugin-sdk-go
 | `settingsSchema` | 否 | 配置结构声明文件 |
 | `events` | 否 | 插件订阅的事件；为空表示接收所有事件 |
 | `permissions` | 否 | 插件声明的权限 |
+
+常用权限：
+
+| 权限 | 说明 |
+| --- | --- |
+| `account:read` | 读取当前用户可见的微信实例列表 |
+| `message:read` | 读取消息事件 |
+| `message:send` | 发送消息动作 |
 
 ## 后端插件
 
@@ -259,6 +253,29 @@ wechat-desk 会代理到插件进程：
 | `X-Wxbot-Account-Wxid` | 当前微信账号 wxid |
 | `X-Wxbot-Plugin-ID` | 当前插件 ID |
 
+```text
+GET /api/plugins/{pluginId}/sdk/accounts
+```
+
+返回当前登录用户可见的实例列表：
+
+```json
+{
+  "success": true,
+  "accounts": [
+    {
+      "wxid": "wxid_xxx",
+      "nickName": "客服号",
+      "alias": "service",
+      "avatar": "",
+      "status": "online"
+    }
+  ]
+}
+```
+
+如果插件没有配置“生效的微信实例”列表，建议按全实例生效处理；需要限定实例时由插件自己在配置页提供下拉框或多选框，并在保存时校验至少选择一个实例。
+
 ## 事件
 
 常用事件常量：
@@ -295,8 +312,6 @@ messageID := sdk.PayloadInt(event.Payload, "messageId")
 ```
 
 ## 动作
-
-插件不要直接调用 wechat-desk 数据库。需要让主程序执行能力时，返回 `sdk.Action`。
 
 常用动作：
 

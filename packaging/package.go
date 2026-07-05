@@ -30,6 +30,8 @@ type Manifest struct {
 	Name           string           `json:"name"`
 	Version        string           `json:"version"`
 	Runtime        string           `json:"runtime"`
+	Category       string           `json:"category,omitempty"`
+	Summary        string           `json:"summary,omitempty"`
 	Description    string           `json:"description"`
 	Entry          string           `json:"entry,omitempty"`
 	Frontend       string           `json:"frontend,omitempty"`
@@ -37,6 +39,7 @@ type Manifest struct {
 	Permissions    []sdk.Permission `json:"permissions,omitempty"`
 	SettingsSchema string           `json:"settingsSchema,omitempty"`
 	Icon           string           `json:"icon,omitempty"`
+	Previews       []string         `json:"previews,omitempty"`
 }
 
 type Checksums struct {
@@ -148,7 +151,7 @@ func ValidateManifest(manifest Manifest, exists func(string) bool) error {
 	default:
 		return errors.New("manifest.runtime 不支持")
 	}
-	for _, path := range []string{manifest.Entry, manifest.Frontend, manifest.SettingsSchema, manifest.Icon} {
+	for _, path := range append([]string{manifest.Entry, manifest.Frontend, manifest.SettingsSchema, manifest.Icon}, manifest.Previews...) {
 		if strings.TrimSpace(path) == "" {
 			continue
 		}

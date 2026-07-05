@@ -3,6 +3,8 @@
   "name": {{printf "%q" .Name}},
   "version": {{printf "%q" .Version}},
   "runtime": "process",
+  "category": "utility",
+  "summary": {{printf "%q" .Description}},
   "description": {{printf "%q" .Description}},
   "entry": "backend/bin/{{.ID}}-process",
 {{if .Frontend}}  "frontend": "frontend/dist/index.html",
@@ -11,6 +13,7 @@
     "message.received"
   ],
   "permissions": [
+    "account:read",
     "message:read",
     "message:send"
   ]

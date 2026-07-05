@@ -27,6 +27,7 @@ const (
 
 	PermissionMessageRead  = "message:read"
 	PermissionMessageSend  = "message:send"
+	PermissionAccountRead  = "account:read"
 	PermissionContactRead  = "contact:read"
 	PermissionContactWrite = "contact:write"
 	PermissionTaskWrite    = "task:write"
@@ -45,10 +46,14 @@ type Manifest struct {
 	Name           string         `json:"name"`
 	Version        string         `json:"version"`
 	Runtime        string         `json:"runtime,omitempty"`
+	Category       string         `json:"category,omitempty"`
+	Summary        string         `json:"summary,omitempty"`
 	Description    string         `json:"description"`
 	Events         []string       `json:"events,omitempty"`
 	Permissions    []Permission   `json:"permissions,omitempty"`
 	SettingsSchema SettingsSchema `json:"settingsSchema,omitempty"`
+	Icon           string         `json:"icon,omitempty"`
+	Previews       []string       `json:"previews,omitempty"`
 }
 
 type Event struct {

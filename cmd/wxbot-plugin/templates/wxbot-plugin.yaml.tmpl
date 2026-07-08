@@ -10,3 +10,8 @@ backend:
   dist: ./frontend/dist
 {{end}}package:
   output: ./dist/{{.ID}}-{{.Version}}.wxplugin
+dev:
+  accounts:
+    - wxid: wxid_dev
+      nickName: 本地开发实例
+      status: online

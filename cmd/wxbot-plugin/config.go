@@ -24,6 +24,26 @@ type Config struct {
 	Package struct {
 		Output string `yaml:"output"`
 	} `yaml:"package"`
+	Dev DevConfig `yaml:"dev"`
+}
+
+type DevConfig struct {
+	Host            string       `yaml:"host"`
+	Port            int          `yaml:"port"`
+	BackendPort     int          `yaml:"backendPort"`
+	FrontendPort    int          `yaml:"frontendPort"`
+	BackendCommand  string       `yaml:"backendCommand"`
+	FrontendCommand string       `yaml:"frontendCommand"`
+	UserID          int          `yaml:"userId"`
+	Accounts        []DevAccount `yaml:"accounts"`
+}
+
+type DevAccount struct {
+	Wxid     string `yaml:"wxid" json:"wxid"`
+	NickName string `yaml:"nickName" json:"nickName"`
+	Alias    string `yaml:"alias,omitempty" json:"alias,omitempty"`
+	Avatar   string `yaml:"avatar,omitempty" json:"avatar,omitempty"`
+	Status   string `yaml:"status" json:"status"`
 }
 
 func loadConfig(path string) (Config, string, error) {

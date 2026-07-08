@@ -369,6 +369,33 @@ await fetch(`/api/plugins/demo-plugin/api/settings?wxid=${wxid}`, {
 
 配置页通常由 wechat-desk 用 iframe 加载。建议插件前端监听宿主传入的 token / wxid，再请求插件 API。
 
+## 本地调试配置页
+
+没有微信协议或 wechat-desk 环境时，使用 SDK CLI 启动本地开发宿主：
+
+```bash
+wxbot-plugin dev -config wxbot-plugin.yaml
+```
+
+该命令会启动插件后端、前端开发服务器和 `http://127.0.0.1:3300` 本地宿主。宿主负责注入 iframe 初始化上下文、提供 mock 实例列表，并将正式路径 `/api/plugins/{pluginId}/api/*` 转发到插件后端，因此插件前端不需要加入开发环境分支。
+
+可在 `wxbot-plugin.yaml` 中覆盖默认配置：
+
+```yaml
+dev:
+  host: 127.0.0.1
+  port: 3300
+  backendPort: 49152
+  frontendPort: 3301
+  userId: 1
+  accounts:
+    - wxid: wxid_dev
+      nickName: 本地开发实例
+      status: online
+```
+
+也可以通过 `-port`、`-backend-port`、`-frontend-port` 和 `-account` 临时覆盖。真实消息、联系人等微信协议能力仍需通过 mock 事件或专用 mock 接口模拟。
+
 ## wxbot-plugin.yaml
 
 SDK CLI 使用 `wxbot-plugin.yaml` 构建和打包：

@@ -14,11 +14,13 @@ func main() {
 
 func run(args []string) error {
 	if len(args) == 0 {
-		return fmt.Errorf("用法: wxbot-plugin init|build|package|pack|validate|verify|publish")
+		return fmt.Errorf("用法: wxbot-plugin init|dev|build|package|pack|validate|verify|publish")
 	}
 	switch args[0] {
 	case "init":
 		return runInit(args[1:])
+	case "dev":
+		return runDev(args[1:])
 	case "build":
 		return runBuild(args[1:])
 	case "package":

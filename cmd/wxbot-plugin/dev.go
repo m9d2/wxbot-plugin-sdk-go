@@ -247,8 +247,11 @@ func newDevHandler(manifest devManifest, cfg DevConfig) (http.Handler, error) {
 			writeDevHost(w, manifest, cfg.Accounts[0])
 		case r.URL.Path == apiPrefix+"/sdk/accounts":
 			writeDevJSON(w, map[string]any{"success": true, "accounts": cfg.Accounts})
-		case r.URL.Path == apiPrefix+"/api" || strings.HasPrefix(r.URL.Path, apiPrefix+"/api/"):
+		case r.URL.Path == apiPrefix || strings.HasPrefix(r.URL.Path, apiPrefix+"/"):
 			r.URL.Path = strings.TrimPrefix(r.URL.Path, apiPrefix)
+			if r.URL.Path == "" {
+				r.URL.Path = "/"
+			}
 			r.Header.Set("X-Wxbot-User-ID", strconv.Itoa(cfg.UserID))
 			r.Header.Set("X-Wxbot-Account-Wxid", requestAccountWxid(r, cfg.Accounts[0].Wxid))
 			r.Header.Set("X-Wxbot-Plugin-ID", manifest.ID)

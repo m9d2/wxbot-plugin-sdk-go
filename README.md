@@ -239,11 +239,14 @@ func (p *Plugin) settings(w http.ResponseWriter, r *http.Request) {
 /api/plugins/{pluginId}/api/settings
 ```
 
-wechat-desk 会代理到插件进程：
+wechat-desk 会剥掉网关前缀，并将剩余路径原样代理到插件进程：
 
 ```text
 插件进程 /api/settings
 ```
+
+插件路径不要求必须以 `/api` 开头。例如插件注册 `/settings`，前端请求
+`/api/plugins/{pluginId}/settings` 时，插件进程收到的就是 `/settings`。
 
 代理时会附加请求头：
 
@@ -377,7 +380,7 @@ await fetch(`/api/plugins/demo-plugin/api/settings?wxid=${wxid}`, {
 wxbot-plugin dev -config wxbot-plugin.yaml
 ```
 
-该命令会启动插件后端、前端开发服务器和 `http://127.0.0.1:3300` 本地宿主。宿主负责注入 iframe 初始化上下文、提供 mock 实例列表，并将正式路径 `/api/plugins/{pluginId}/api/*` 转发到插件后端，因此插件前端不需要加入开发环境分支。
+该命令会启动插件后端、前端开发服务器和 `http://127.0.0.1:3300` 本地宿主。宿主负责注入 iframe 初始化上下文、提供 mock 实例列表，并将 `/api/plugins/{pluginId}/*` 去掉宿主前缀后原样转发到插件后端，因此插件前端不需要加入开发环境分支。
 
 可在 `wxbot-plugin.yaml` 中覆盖默认配置：
 
@@ -493,7 +496,7 @@ wxbot-plugin publish \
 
 - 插件业务数据放在 `WX_PLUGIN_DATA_DIR` 下，不要写入 wechat-desk 数据库。
 - 插件只通过事件和动作与主程序交互。
-- 插件配置页只调用 `/api/plugins/{pluginId}/api/*`，不要直接请求插件进程端口。
+- 插件配置页只调用 `/api/plugins/{pluginId}/*`，不要直接请求插件进程端口。`*` 必须与插件后端注册的路径一致。
 - `Manifest()` 中声明的版本要和 `manifest.json` 保持一致。
 - 业务动作失败时，在 `OnActionResult` 里回滚插件自己的业务状态。
 - 插件包里不要包含源码、`node_modules`、`.git`、本地配置文件。

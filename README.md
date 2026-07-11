@@ -233,33 +233,6 @@ func (p *Plugin) settings(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-配置页请求路径仍然走 wechat-desk 网关：
-
-```text
-/api/plugins/{pluginId}/api/settings
-```
-
-wechat-desk 会剥掉网关前缀，并将剩余路径原样代理到插件进程：
-
-```text
-插件进程 /api/settings
-```
-
-插件路径不要求必须以 `/api` 开头。例如插件注册 `/settings`，前端请求
-`/api/plugins/{pluginId}/settings` 时，插件进程收到的就是 `/settings`。
-
-代理时会附加请求头：
-
-| 请求头 | 说明 |
-| --- | --- |
-| `X-Wxbot-User-ID` | 当前系统用户 ID |
-| `X-Wxbot-Account-Wxid` | 当前微信账号 wxid |
-| `X-Wxbot-Plugin-ID` | 当前插件 ID |
-
-```text
-GET /api/plugins/{pluginId}/sdk/accounts
-```
-
 返回当前登录用户可见的实例列表：
 
 ```json
